@@ -6,10 +6,9 @@
   let hostname: string = "";
   let headers: [{ key: string; value: string }] = [{ key: "", value: "" }];
   let cookies: [{ key: string; value: string }] = [{ key: "", value: "" }];
-  let loading = false;
+  let loading = true;
 
   const getClientValues = async () => {
-    loading = true;
     headers.splice(0);
     cookies.splice(0);
     const url =
@@ -51,62 +50,66 @@
 </header>
 <main>
   <h1>あなたの利用している情報は・・・</h1>
-  <div class="form-floating mb-3">
-    <input
-      type="text"
-      id="ipaddress"
-      class="form-control form-control-lg"
-      bind:value={ipaddress}
-      on:focus={focusedIpAddress}
-    />
-    <label for="ipaddress">IP Address</label>
-  </div>
-  <div>
-    <div class="row">
-      <div class="col-auto">Host Name</div>
-      <div class="col">{hostname}</div>
+  {#if loading}
+    Now Loading...
+  {:else}
+    <div class="form-floating mb-3">
+      <input
+        type="text"
+        id="ipaddress"
+        class="form-control form-control-lg"
+        bind:value={ipaddress}
+        on:focus={focusedIpAddress}
+      />
+      <label for="ipaddress">IP Address</label>
     </div>
-    <div class="row">
-      <div class="col-auto">User Agent</div>
-      <div class="col">{useragent}</div>
+    <div>
+      <div class="row">
+        <div class="col-auto">Host Name</div>
+        <div class="col">{hostname}</div>
+      </div>
+      <div class="row">
+        <div class="col-auto">User Agent</div>
+        <div class="col">{useragent}</div>
+      </div>
     </div>
-  </div>
 
-  <h2>Header</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Key</th>
-        <th scope="col">Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each headers as d}
+    <h2>Header</h2>
+    <table class="table">
+      <thead>
         <tr>
-          <th>{d.key}</th>
-          <td>{d.value}</td>
+          <th scope="col">Key</th>
+          <th scope="col">Value</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each headers as d}
+          <tr>
+            <th>{d.key}</th>
+            <td>{d.value}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
 
-  <h2>Cookie</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Key</th>
-        <th scope="col">Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each cookies as d}
+    <h2>Cookie</h2>
+    <table class="table">
+      <thead>
         <tr>
-          <th>{d.key}</th>
-          <td>{d.value}</td>
+          <th scope="col">Key</th>
+          <th scope="col">Value</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each cookies as d}
+          <tr>
+            <th>{d.key}</th>
+            <td>{d.value}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  {/if}
 </main>
 <footer>&copy; tk3.biz 2022</footer>
 
