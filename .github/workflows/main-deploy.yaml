@@ -3,7 +3,6 @@ name: Deploy client-information
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -27,11 +26,10 @@ jobs:
       - name: Build
         working-directory: ${{ env.working-directory }}
         run: yarn build
-      - name: Generate SSH key
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
       - name: Deploy
-        working-directory: ${{ env.working-directory }}
-        run: rsync -ahvz -e "ssh -i ~/.ssh/id_rsa -p 50022 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./public/ ubuntu@tk3.biz:/var/www/client-information/
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIENT_INFORMATION_CA104 }}'
+          channelId: live
+          projectId: client-information-ca104

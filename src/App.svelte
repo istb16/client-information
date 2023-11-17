@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, onMount, tick } from "svelte";
+  import { onMount } from "svelte";
 
   let ipaddress: string = "";
   let useragent: string = "";
@@ -32,7 +32,6 @@
       loading = false;
 
       const tb = <HTMLInputElement>document.getElementById("ipaddress");
-      await tick();
       tb.select();
     } catch {}
   };
