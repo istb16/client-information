@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let ipaddress: string = "";
-  let useragent: string = "";
-  let hostname: string = "";
-  let headers: [{ key: string; value: string }] = [{ key: "", value: "" }];
-  let cookies: [{ key: string; value: string }] = [{ key: "", value: "" }];
-  let loading = true;
+  let ipaddress = $state("");
+  let useragent = $state("");
+  let hostname = $state("");
+  let headers = $state<{ key: string; value: string }[]>([]);
+  let cookies = $state<{ key: string; value: string }[]>([]);
+  let loading = $state(true);
 
   const getClientValues = async () => {
-    headers.splice(0);
-    cookies.splice(0);
+    headers.length = 0;
+    cookies.length = 0;
     const url =
       "https://rpdyxad9y2.execute-api.ap-northeast-1.amazonaws.com/Prod/dump";
 
@@ -19,24 +19,23 @@
       const values = await res.json();
       ipaddress = values.remoteIpAddress;
       hostname = values.remoteHostName;
-      useragent = values.headers.find((h) => h.key == "User-Agent")?.value;
-      values.headers.forEach((h) => {
+      useragent = values.headers.find((h: { key: string }) => h.key == "User-Agent")?.value;
+      values.headers.forEach((h: { key: string; value: string }) => {
         headers.push({ key: h.key, value: h.value });
       });
-      headers = headers;
-      values.cookies.forEach((h) => {
+      values.cookies.forEach((h: { key: string; value: string }) => {
         cookies.push({ key: h.key, value: h.value });
       });
-      cookies = cookies;
 
       loading = false;
 
-      const tb = <HTMLInputElement>document.getElementById("ipaddress");
+      const tb = document.getElementById("ipaddress") as HTMLInputElement;
       tb.select();
     } catch {}
   };
+
   const focusedIpAddress = (e: FocusEvent) => {
-    (<HTMLInputElement>e.currentTarget).select();
+    (e.currentTarget as HTMLInputElement).select();
   };
 
   onMount(async () => {
@@ -58,7 +57,7 @@
         id="ipaddress"
         class="form-control form-control-lg"
         bind:value={ipaddress}
-        on:focus={focusedIpAddress}
+        onfocus={focusedIpAddress}
       />
       <label for="ipaddress">IP Address</label>
     </div>
