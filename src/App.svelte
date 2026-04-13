@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   type KeyValue = { key: string; value: string };
 
@@ -9,6 +9,7 @@
   let headers = $state<KeyValue[]>([]);
   let cookies = $state<KeyValue[]>([]);
   let loading = $state(true);
+  let copied = $state(false);
 
   const getClientValues = async () => {
     const url = "https://rpdyxad9y2.execute-api.ap-northeast-1.amazonaws.com/Prod/dump";
@@ -21,8 +22,15 @@
       headers = values.headers as KeyValue[];
       cookies = values.cookies as KeyValue[];
       loading = false;
+      await tick();
       (document.getElementById("ipaddress") as HTMLInputElement).select();
     } catch {}
+  };
+
+  const copyIpAddress = async () => {
+    await navigator.clipboard.writeText(ipaddress);
+    copied = true;
+    setTimeout(() => (copied = false), 2000);
   };
 
   const focusedIpAddress = (e: FocusEvent) => {
@@ -40,15 +48,25 @@
   {#if loading}
     Now Loading...
   {:else}
-    <div class="form-floating mb-3">
-      <input
-        type="text"
-        id="ipaddress"
-        class="form-control form-control-lg"
-        bind:value={ipaddress}
-        onfocus={focusedIpAddress}
-      />
-      <label for="ipaddress">IP Address</label>
+    <div class="ip-row mb-3">
+      <div class="form-floating flex-grow-1">
+        <input
+          type="text"
+          id="ipaddress"
+          class="form-control form-control-lg"
+          bind:value={ipaddress}
+          onfocus={focusedIpAddress}
+          readonly
+        />
+        <label for="ipaddress">IP Address</label>
+      </div>
+      <button class="copy-btn" onclick={copyIpAddress} title="コピー">
+        {#if copied}
+          <span class="copy-label">Copied!</span>
+        {:else}
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        {/if}
+      </button>
     </div>
     <div class="info-grid mb-3">
       <div class="row">
@@ -167,6 +185,40 @@
     height: 2px;
     background-color: var(--color-accent);
     flex-shrink: 0;
+  }
+
+  .ip-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .copy-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    padding: 0 14px;
+    background-color: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .copy-btn:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+
+  .copy-label {
+    white-space: nowrap;
   }
 
   .info-grid {
