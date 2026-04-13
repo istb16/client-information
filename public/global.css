@@ -1,11 +1,50 @@
+:root {
+  --color-text: #242424;
+  --color-text-muted: #6c6c6c;
+  --color-accent: #c08322;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #faf9f7;
+  --color-border: rgba(0, 0, 0, 0.12);
+}
 
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.9;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
 
+/* Bootstrap overrides */
+.form-control:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 0.25rem rgba(192, 131, 34, 0.15);
+}
 
+.table {
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
 
+.table thead th {
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-bottom-color: var(--color-border);
+  background-color: var(--color-bg-subtle);
+}
 
+.table tbody tr:hover {
+  background-color: var(--color-bg-subtle);
+}
 
-
-
-
-
-
+.table th,
+.table td {
+  border-color: rgba(0, 0, 0, 0.07);
+  vertical-align: middle;
+  padding: 0.6rem 0.75rem;
+}

@@ -1,36 +1,27 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  type KeyValue = { key: string; value: string };
+
   let ipaddress = $state("");
   let useragent = $state("");
   let hostname = $state("");
-  let headers = $state<{ key: string; value: string }[]>([]);
-  let cookies = $state<{ key: string; value: string }[]>([]);
+  let headers = $state<KeyValue[]>([]);
+  let cookies = $state<KeyValue[]>([]);
   let loading = $state(true);
 
   const getClientValues = async () => {
-    headers.length = 0;
-    cookies.length = 0;
-    const url =
-      "https://rpdyxad9y2.execute-api.ap-northeast-1.amazonaws.com/Prod/dump";
-
+    const url = "https://rpdyxad9y2.execute-api.ap-northeast-1.amazonaws.com/Prod/dump";
     try {
       const res = await fetch(url, { mode: "cors", cache: "no-cache" });
       const values = await res.json();
       ipaddress = values.remoteIpAddress;
       hostname = values.remoteHostName;
-      useragent = values.headers.find((h: { key: string }) => h.key == "User-Agent")?.value;
-      values.headers.forEach((h: { key: string; value: string }) => {
-        headers.push({ key: h.key, value: h.value });
-      });
-      values.cookies.forEach((h: { key: string; value: string }) => {
-        cookies.push({ key: h.key, value: h.value });
-      });
-
+      useragent = values.headers.find((h: KeyValue) => h.key === "User-Agent")?.value ?? "";
+      headers = values.headers as KeyValue[];
+      cookies = values.cookies as KeyValue[];
       loading = false;
-
-      const tb = document.getElementById("ipaddress") as HTMLInputElement;
-      tb.select();
+      (document.getElementById("ipaddress") as HTMLInputElement).select();
     } catch {}
   };
 
@@ -38,9 +29,7 @@
     (e.currentTarget as HTMLInputElement).select();
   };
 
-  onMount(async () => {
-    await getClientValues();
-  });
+  onMount(getClientValues);
 </script>
 
 <header>
@@ -61,7 +50,7 @@
       />
       <label for="ipaddress">IP Address</label>
     </div>
-    <div>
+    <div class="info-grid mb-3">
       <div class="row">
         <div class="col-auto">Host Name</div>
         <div class="col">{hostname}</div>
@@ -109,40 +98,114 @@
     </table>
   {/if}
 </main>
-<footer>&copy; tk3.biz 2022</footer>
+<footer>&copy; tk3.biz 2026</footer>
 
 <style>
   header {
     display: flex;
-    justify-content: normal;
     align-items: center;
-    background-color: #393e46;
-    margin: -8px -8px 3rem -8px;
+    background-color: var(--color-bg);
+    margin: -8px -8px 3rem;
+    padding: 0 24px;
+    height: 64px;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   header h1 {
-    margin: 8px 5px 5px 13px;
-    color: #fff;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  header h1::before {
+    content: '';
+    width: 3px;
+    height: 1.1em;
+    background-color: var(--color-accent);
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 
   main {
     max-width: 768px;
     margin: auto;
+    padding: 0 16px;
   }
+
   main h1 {
     margin-top: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
   }
 
   main h2 {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  main h2::before {
+    content: '';
+    width: 12px;
+    height: 2px;
+    background-color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .info-grid {
+    background-color: var(--color-bg-subtle);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+  }
+
+  .info-grid .row {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .info-grid .row:last-child {
+    border-bottom: none;
+  }
+
+  .info-grid .col-auto {
+    min-width: 110px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .info-grid .col {
+    font-size: 0.9rem;
+    word-break: break-all;
   }
 
   footer {
-    background-color: #393e46;
-    margin: 3rem -8px -8px -8px;
-    padding: 8px;
-    color: #fff;
+    margin: 4rem -8px -8px;
+    padding: 16px 24px;
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.82rem;
+    text-align: center;
+    letter-spacing: 0.04em;
   }
 </style>
