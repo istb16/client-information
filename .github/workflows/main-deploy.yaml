@@ -20,6 +20,9 @@ jobs:
       - name: install
         working-directory: ${{ env.working-directory }}
         run: npm ci
+      - name: Test
+        working-directory: ${{ env.working-directory }}
+        run: npm run test
       - name: Build
         working-directory: ${{ env.working-directory }}
         run: npm run build
