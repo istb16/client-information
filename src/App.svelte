@@ -41,223 +41,368 @@
 </script>
 
 <header>
-  <h1>Client Information</h1>
+  <div class="logo">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M2 12h20"/>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <span class="app-title">Client Information</span>
+    <span class="app-subtitle">あなたのネットワーク情報を表示します</span>
+  </div>
 </header>
-<main>
-  <h1>あなたの利用している情報は・・・</h1>
-  {#if loading}
-    Now Loading...
-  {:else}
-    <div class="ip-row mb-3">
-      <div class="form-floating flex-grow-1">
+
+{#if loading}
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <span class="loading-text">Now Loading...</span>
+  </div>
+{:else}
+  <main>
+    <section class="card">
+      <div class="card-head">
+        <span class="card-label">IP アドレス</span>
+        <button class="action-btn" title="コピー" onclick={copyIpAddress}>
+          {#if copied}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Copied!
+          {:else}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            コピー
+          {/if}
+        </button>
+      </div>
+      <div class="card-body ip-body">
         <input
           type="text"
           id="ipaddress"
-          class="form-control form-control-lg"
+          class="ip-input"
           bind:value={ipaddress}
           onfocus={focusedIpAddress}
           readonly
         />
-        <label for="ipaddress">IP Address</label>
       </div>
-      <button class="copy-btn" onclick={copyIpAddress} title="コピー">
-        {#if copied}
-          <span class="copy-label">Copied!</span>
-        {:else}
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        {/if}
-      </button>
-    </div>
-    <div class="info-grid mb-3">
-      <div class="row">
-        <div class="col-auto">Host Name</div>
-        <div class="col">{hostname}</div>
-      </div>
-      <div class="row">
-        <div class="col-auto">User Agent</div>
-        <div class="col">{useragent}</div>
-      </div>
-    </div>
+    </section>
 
-    <h2>Header</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Key</th>
-          <th scope="col">Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each headers as d}
-          <tr>
-            <th>{d.key}</th>
-            <td>{d.value}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+    <section class="card">
+      <div class="card-head">
+        <span class="card-label">情報</span>
+      </div>
+      <div class="info-list">
+        <div class="info-row">
+          <span class="info-key">Host Name</span>
+          <span class="info-val">{hostname}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">User Agent</span>
+          <span class="info-val">{useragent}</span>
+        </div>
+      </div>
+    </section>
 
-    <h2>Cookie</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Key</th>
-          <th scope="col">Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each cookies as d}
+    <section class="card">
+      <div class="card-head">
+        <span class="card-label">Header</span>
+        <span class="badge">{headers.length}</span>
+      </div>
+      <table class="data-table">
+        <thead>
           <tr>
-            <th>{d.key}</th>
-            <td>{d.value}</td>
+            <th>Key</th>
+            <th>Value</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-  {/if}
-</main>
+        </thead>
+        <tbody>
+          {#each headers as row}
+            <tr>
+              <td class="key-cell">{row.key}</td>
+              <td>{row.value}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </section>
+
+    {#if cookies.length > 0}
+      <section class="card">
+        <div class="card-head">
+          <span class="card-label">Cookie</span>
+          <span class="badge">{cookies.length}</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each cookies as row}
+              <tr>
+                <td class="key-cell">{row.key}</td>
+                <td>{row.value}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </section>
+    {/if}
+  </main>
+{/if}
+
 <footer>&copy; tk3.biz 2026</footer>
 
 <style>
+  /* ── Header ── */
   header {
-    display: flex;
-    align-items: center;
-    background-color: var(--color-bg);
-    margin: -8px -8px 3rem;
-    padding: 0 24px;
-    height: 64px;
-    border-bottom: 1px solid var(--color-border);
     position: sticky;
     top: 0;
     z-index: 10;
-  }
-
-  header h1 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
-
-  header h1::before {
-    content: '';
-    width: 3px;
-    height: 1.1em;
-    background-color: var(--color-accent);
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  main {
-    max-width: 768px;
-    margin: auto;
-    padding: 0 16px;
-  }
-
-  main h1 {
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
-    font-size: 1.4rem;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-  }
-
-  main h2 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    gap: 12px;
+    height: 64px;
+    padding: 0 24px;
+    background: #fff;
     border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   }
 
-  main h2::before {
-    content: '';
-    width: 12px;
-    height: 2px;
-    background-color: var(--color-accent);
-    flex-shrink: 0;
-  }
-
-  .ip-row {
-    display: flex;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .copy-btn {
-    flex-shrink: 0;
+  .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #5b9cf6, #4a7cf7);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 48px;
-    padding: 0 14px;
-    background-color: var(--color-bg-subtle);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(74, 124, 247, 0.35);
+  }
+
+  .header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .app-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.01em;
+  }
+
+  .app-subtitle {
+    font-size: 0.75rem;
     color: var(--color-text-muted);
-    cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
-    font-size: 0.8rem;
+  }
+
+  /* ── Loading ── */
+  .loading-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 64px);
+  }
+
+  .loading-text {
+    margin-top: 14px;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-accent-end);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Main layout ── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--color-card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .card-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  /* ── IP input ── */
+  .ip-body {
+    padding: 20px 20px 22px;
+  }
+
+  .ip-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1.75rem;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    color: var(--color-text);
+    font-family: inherit;
+    letter-spacing: 0.03em;
+    cursor: text;
   }
 
-  .copy-btn:hover {
-    background-color: var(--color-accent);
-    border-color: var(--color-accent);
-    color: #fff;
+  /* ── Action button ── */
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    font-family: inherit;
   }
 
-  .copy-label {
-    white-space: nowrap;
+  .action-btn:hover {
+    background: var(--color-row-hover);
+    border-color: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
   }
 
-  .info-grid {
-    background-color: var(--color-bg-subtle);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
-    padding: 1rem 1.25rem;
+  /* ── Badge ── */
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-accent-end);
+    background: rgba(74, 124, 247, 0.1);
+    border-radius: 20px;
+    padding: 2px 8px;
+    letter-spacing: 0.02em;
   }
 
-  .info-grid .row {
-    padding: 0.35rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  /* ── Info list ── */
+  .info-list {
+    padding: 4px 0;
   }
 
-  .info-grid .row:last-child {
+  .info-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 11px 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .info-row:last-child {
     border-bottom: none;
   }
 
-  .info-grid .col-auto {
-    min-width: 110px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--color-text-muted);
+  .info-key {
+    flex-shrink: 0;
+    width: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
   }
 
-  .info-grid .col {
-    font-size: 0.9rem;
+  .info-val {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
     word-break: break-all;
   }
 
-  footer {
-    margin: 4rem -8px -8px;
-    padding: 16px 24px;
-    background-color: var(--color-bg-subtle);
+  /* ── Data table ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table thead tr {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .data-table th {
+    padding: 10px 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
-    border-top: 1px solid var(--color-border);
-    font-size: 0.82rem;
+    text-align: left;
+    background: var(--color-row-hover);
+  }
+
+  .data-table td {
+    padding: 10px 20px;
+    font-size: 0.855rem;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    word-break: break-all;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-table tbody tr:hover td {
+    background: var(--color-row-hover);
+  }
+
+  .key-cell {
+    font-weight: 500;
+    color: var(--color-text) !important;
+    white-space: nowrap;
+    word-break: normal !important;
+    width: 1%;
+  }
+
+  /* ── Footer ── */
+  footer {
     text-align: center;
+    padding: 20px;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
     letter-spacing: 0.04em;
   }
 </style>
