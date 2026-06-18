@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "public",
+    "public": "dist",
     "predeploy": [
       "npm run test",
       "npm run build"
