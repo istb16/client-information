@@ -6,7 +6,7 @@
 
 | カテゴリ | 技術 |
 |---|---|
-| フロントエンド | [Svelte 5](https://svelte.dev/) + TypeScript 7 |
+| フロントエンド | [Svelte 5](https://svelte.dev/) + TypeScript 6 |
 | スタイル | カスタムCSS |
 | ビルドツール | Vite 8 |
 | テスト | Vitest 5 + Testing Library |
@@ -29,8 +29,15 @@ npm install
 | `npm run dev` | 開発サーバー起動（HMR） |
 | `npm run build` | プロダクション向けビルド（`dist/` に出力） |
 | `npm run preview` | ビルド済みファイルをローカルサーバーで配信 |
+| `npm run check` | svelte-check による型チェック |
 | `npm run test` | テストを実行 |
 | `npm run test:watch` | テストをウォッチモードで実行 |
+
+## TypeScript のバージョン
+
+TypeScript は 6 系に据え置き。以下が TS 7 に対応したら上げる。
+
+- `svelte-check`（4.7.7）: peerDependencies が `typescript: ^5.0.0 || ^6.0.0` で、型チェックに TypeScript の JS API（Language Service）を使うため、JS API を持たない TS 7 では動かない
 
 ## デプロイ
 
