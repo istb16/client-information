@@ -39,9 +39,11 @@ npm install
 - Firebase プロジェクトID: `client-information-ca104`
 - 設定ファイル: `firebase.json` / `.firebaserc`
 
-手動でデプロイする場合は [Firebase CLI](https://firebase.google.com/docs/cli) をインストールのうえ、以下を実行してください（`firebase.json` の predeploy でテストとビルドが自動実行されます）。
+手動でデプロイする場合は [Firebase CLI](https://firebase.google.com/docs/cli) をインストールのうえ、以下を実行してください。
 
 ```bash
+npm run test
+npm run build
 firebase deploy
 ```
 
