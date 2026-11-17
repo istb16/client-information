@@ -46,13 +46,7 @@ TypeScript は 6 系に据え置き。以下が TS 7 に対応したら上げる
 - Firebase プロジェクトID: `client-information-ca104`
 - 設定ファイル: `firebase.json` / `.firebaserc`
 
-手動でデプロイする場合は [Firebase CLI](https://firebase.google.com/docs/cli) をインストールのうえ、以下を実行してください。
-
-```bash
-npm run test
-npm run build
-firebase deploy
-```
+デプロイは GitHub Actions だけで行い、ローカルからはデプロイしません。
 
 ## プロジェクト構成
 
