@@ -221,6 +221,11 @@
     border-top-color: var(--color-accent-end);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+
+    /* 動きを減らす設定でも「読み込み中」は伝える。止めずにゆっくり回す */
+    @media (prefers-reduced-motion: reduce) {
+      animation-duration: 3s;
+    }
   }
 
   @keyframes spin {
