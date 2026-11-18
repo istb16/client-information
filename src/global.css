@@ -1,14 +1,9 @@
+/*
+ * アプリの全体のスタイル。色・フォント・角丸・影は tk-base.css（共通の土台）の
+ * --tk-* を使う。明暗の切り替えは tk-base.css の側で済んでいる。
+ */
 :root {
-  --color-text: #1a1d23;
-  --color-text-secondary: #4a5068;
-  --color-text-muted: #8890a4;
-  --color-accent-start: #5b9cf6;
-  --color-accent-end: #4a7cf7;
-  --color-bg: #eef2f7;
-  --color-card: #ffffff;
-  --color-border: rgba(0, 0, 0, 0.07);
-  --color-row-hover: #f7f9fc;
-  --radius-card: 14px;
+  --tk-accent: var(--tk-blue);
 }
 
 *, *::before, *::after {
@@ -18,11 +13,7 @@
 }
 
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
   font-size: 15px;
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }

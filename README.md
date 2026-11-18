@@ -7,7 +7,7 @@
 | カテゴリ | 技術 |
 |---|---|
 | フロントエンド | [Svelte 5](https://svelte.dev/) + TypeScript 6 |
-| スタイル | カスタムCSS |
+| スタイル | カスタムCSS（tk3 apps の共通の土台 `tk-base.css` の上に重ねる） |
 | ビルドツール | Vite 8 |
 | テスト | Vitest 5 + Testing Library |
 | ホスティング | Firebase Hosting |
@@ -39,6 +39,16 @@ TypeScript は 6 系に据え置き。以下が TS 7 に対応したら上げる
 
 - `svelte-check`（4.7.7）: peerDependencies が `typescript: ^5.0.0 || ^6.0.0` で、型チェックに TypeScript の JS API（Language Service）を使うため、JS API を持たない TS 7 では動かない
 
+## 見た目
+
+tk3.biz のアプリで共通の土台（`src/tk-base.css`）を使う。
+
+- `src/tk-base.css` は共通の土台の写しで、手を加えない。直すときは元の写しを直して、写し直す
+- 色・フォント・角丸・影は `--tk-*` の変数を使い、コンポーネントに色の値を直に書かない。アクセントは `--tk-blue`（`src/global.css` で `--tk-accent` に選ぶ）
+- 端末の設定（`prefers-color-scheme`）に合わせて明るい配色と暗い配色を切り替える。切り替えボタンは置かない
+- 画面の上は `.tk-header`（アイコンとアプリ名）、下は `.tk-footer`（tk3.biz へのリンク）
+- アイコンは `public/icon.svg`・`public/icon-32.png`・`public/apple-touch-icon.png`
+
 ## デプロイ
 
 `main` ブランチへプッシュすると GitHub Actions が自動的にビルドし、Firebase Hosting へデプロイします。
@@ -57,9 +67,10 @@ TypeScript は 6 系に据え置き。以下が TS 7 に対応したら上げる
 │   ├── App.svelte     # メインコンポーネント
 │   ├── App.test.ts    # テスト
 │   ├── setupTests.ts  # テストのセットアップ
+│   ├── tk-base.css    # tk3 apps の共通の土台（色・フォント・ヘッダーなど。手を加えない）
 │   ├── global.css     # グローバルスタイル
 │   └── global.d.ts    # 型定義
-├── public/            # 静的ファイル（favicon・ロゴ）
+├── public/            # 静的ファイル（アイコン）
 ├── dist/              # ビルド出力（git管理外）
 ├── .github/
 │   └── workflows/

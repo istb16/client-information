@@ -40,18 +40,12 @@
   onMount(getClientValues);
 </script>
 
-<header>
-  <div class="logo">
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M2 12h20"/>
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-    </svg>
-  </div>
-  <div class="header-text">
-    <span class="app-title">Client Information</span>
-    <span class="app-subtitle">あなたのネットワーク情報を表示します</span>
-  </div>
+<header class="tk-header app-header">
+  <a class="tk-header__home" href="/">
+    <img class="tk-header__icon" src="/icon.svg" alt="" width="32" height="32" />
+    <span class="tk-header__name">CLIENT INFORMATION</span>
+  </a>
+  <span class="tk-header__end app-subtitle">あなたのネットワーク情報を表示します</span>
 </header>
 
 {#if loading}
@@ -61,10 +55,10 @@
   </div>
 {:else}
   <main>
-    <section class="card">
+    <section class="card tk-panel">
       <div class="card-head">
         <span class="card-label">IP アドレス</span>
-        <button class="action-btn" title="コピー" onclick={copyIpAddress}>
+        <button class="tk-btn tk-btn--quiet action-btn" title="コピー" onclick={copyIpAddress}>
           {#if copied}
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             Copied!
@@ -86,7 +80,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card tk-panel">
       <div class="card-head">
         <span class="card-label">情報</span>
       </div>
@@ -102,7 +96,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card tk-panel">
       <div class="card-head">
         <span class="card-label">Header</span>
         <span class="badge">{headers.length}</span>
@@ -126,7 +120,7 @@
     </section>
 
     {#if cookies.length > 0}
-      <section class="card">
+      <section class="card tk-panel">
         <div class="card-head">
           <span class="card-label">Cookie</span>
           <span class="badge">{cookies.length}</span>
@@ -152,52 +146,24 @@
   </main>
 {/if}
 
-<footer>&copy; tk3.biz 2026</footer>
+<footer class="tk-footer">&copy; <a href="https://tk3.biz/">tk3.biz</a> 2026</footer>
 
 <style>
   /* ── Header ── */
-  header {
+  .app-header {
     position: sticky;
     top: 0;
     z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    height: 64px;
-    padding: 0 24px;
-    background: #fff;
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  }
-
-  .logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: linear-gradient(145deg, #5b9cf6, #4a7cf7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(74, 124, 247, 0.35);
-  }
-
-  .header-text {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
-
-  .app-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text);
-    letter-spacing: 0.01em;
   }
 
   .app-subtitle {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: var(--tk-muted);
+
+    /* 狭い画面ではアプリ名を優先し、説明は出さない */
+    @media (width < 560px) {
+      display: none;
+    }
   }
 
   /* ── Loading ── */
@@ -211,14 +177,14 @@
   .loading-text {
     margin-top: 14px;
     font-size: 0.875rem;
-    color: var(--color-text-muted);
+    color: var(--tk-muted);
   }
 
   .spinner {
     width: 36px;
     height: 36px;
-    border: 3px solid var(--color-border);
-    border-top-color: var(--color-accent-end);
+    border: 3px solid var(--tk-line);
+    border-top-color: var(--tk-accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 
@@ -242,12 +208,9 @@
     gap: 16px;
   }
 
-  /* ── Card ── */
+  /* ── Card（.tk-panel の地・線・角丸・影に、行の並びのため余白だけ外す） ── */
   .card {
-    background: var(--color-card);
-    border-radius: var(--radius-card);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    padding: 0;
     overflow: hidden;
   }
 
@@ -256,7 +219,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 20px;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--tk-line);
   }
 
   .card-label {
@@ -264,7 +227,7 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--tk-muted);
   }
 
   .card-body {
@@ -283,42 +246,27 @@
     background: transparent;
     font-size: 1.75rem;
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--tk-ink);
     font-family: inherit;
     letter-spacing: 0.03em;
     cursor: text;
   }
 
-  /* ── Action button ── */
+  /* ── Action button（.tk-btn--quiet を、カードの見出しに収まる大きさにする） ── */
   .action-btn {
-    display: inline-flex;
-    align-items: center;
     gap: 5px;
-    padding: 5px 12px;
+    min-block-size: 32px;
+    padding: 0 14px;
     font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
-    font-family: inherit;
-  }
-
-  .action-btn:hover {
-    background: var(--color-row-hover);
-    border-color: rgba(0, 0, 0, 0.18);
-    color: var(--color-text);
   }
 
   /* ── Badge ── */
   .badge {
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--color-accent-end);
-    background: rgba(74, 124, 247, 0.1);
-    border-radius: 20px;
+    color: var(--tk-accent);
+    background: var(--tk-surface-2);
+    border-radius: var(--tk-radius-pill);
     padding: 2px 8px;
     letter-spacing: 0.02em;
   }
@@ -333,7 +281,7 @@
     align-items: baseline;
     gap: 16px;
     padding: 11px 20px;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--tk-line);
   }
 
   .info-row:last-child {
@@ -347,12 +295,12 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--tk-muted);
   }
 
   .info-val {
     font-size: 0.875rem;
-    color: var(--color-text-secondary);
+    color: var(--tk-body);
     word-break: break-all;
   }
 
@@ -363,7 +311,7 @@
   }
 
   .data-table thead tr {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--tk-line);
   }
 
   .data-table th {
@@ -372,16 +320,16 @@
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--tk-muted);
     text-align: left;
-    background: var(--color-row-hover);
+    background: var(--tk-surface-2);
   }
 
   .data-table td {
     padding: 10px 20px;
     font-size: 0.855rem;
-    color: var(--color-text-secondary);
-    border-bottom: 1px solid var(--color-border);
+    color: var(--tk-body);
+    border-bottom: 1px solid var(--tk-line);
     vertical-align: middle;
     word-break: break-all;
   }
@@ -391,23 +339,14 @@
   }
 
   .data-table tbody tr:hover td {
-    background: var(--color-row-hover);
+    background: var(--tk-surface-2);
   }
 
   .key-cell {
     font-weight: 500;
-    color: var(--color-text) !important;
+    color: var(--tk-ink) !important;
     white-space: nowrap;
     word-break: normal !important;
     width: 1%;
-  }
-
-  /* ── Footer ── */
-  footer {
-    text-align: center;
-    padding: 20px;
-    font-size: 0.78rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.04em;
   }
 </style>
